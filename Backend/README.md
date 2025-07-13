@@ -197,3 +197,118 @@ Send a JSON object with the following structure:
 ### **Notes**
 
 - The returned token can be used
+
+
+## `/users/profile` Endpoint
+
+### **Description**
+
+Returns the authenticated user's profile information. Requires a valid authentication token.
+
+### **Method**
+
+`GET`
+
+### **URL**
+
+`/users/profile`
+
+### **Headers**
+
+- `Authorization: Bearer <token>` (if not using cookies)
+
+### **Responses**
+
+#### **Success**
+
+- **Status Code:** `200 OK`
+- **Body:**
+  ```json
+  {
+    "_id": "60f7c2b8e1d3c2a5b8e1d3c2",
+    "fullName": {
+      "firstname": "John",
+      "lastname": "Doe"
+    },
+    "email": "john.doe@example.com"
+    // other user fields
+  }
+  ```
+
+#### **Authentication Error**
+
+- **Status Code:** `401 Unauthorized`
+- **Body:**
+  ```json
+  {
+    "message": "No token provided, authorization denied"
+  }
+  ```
+  or
+  ```json
+  {
+    "message": "Token is not valid"
+  }
+  ```
+  or
+  ```json
+  {
+    "message": "User not found"
+  }
+  ```
+
+### **Notes**
+
+- You must be logged in and provide a valid token to
+
+
+## `/users/logout` Endpoint
+
+### **Description**
+
+Logs out the authenticated user by blacklisting their token and clearing the authentication cookie.
+
+### **Method**
+
+`GET`
+
+### **URL**
+
+`/users/logout`
+
+### **Headers**
+
+- `Authorization: Bearer <token>` (if not using cookies)
+
+### **Responses**
+
+#### **Success**
+
+- **Status Code:** `200 OK`
+- **Body:**
+  ```json
+  {
+    "message": "Logged out"
+  }
+  ```
+
+#### **Authentication Error**
+
+- **Status Code:** `401 Unauthorized`
+- **Body:**
+  ```json
+  {
+    "message": "No token provided, authorization denied"
+  }
+  ```
+  or
+  ```json
+  {
+    "message": "unauthorized token broo"
+  }
+  ```
+
+### **Notes**
+
+- You must be logged in and provide a valid token to access this endpoint.
+- The token will be blacklisted
