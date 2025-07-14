@@ -312,3 +312,296 @@ Logs out the authenticated user by blacklisting their token and clearing the aut
 
 - You must be logged in and provide a valid token to access this endpoint.
 - The token will be blacklisted
+
+
+## Captain Endpoints
+
+---
+
+## `/captains/register` Endpoint
+
+### **Description**
+
+Registers a new captain in the system. Validates input, hashes the password, creates a captain, and returns an authentication token with captain data.
+
+### **Method**
+
+`POST`
+
+### **URL**
+
+`/captains/register`
+
+### **Request Body**
+
+Send a JSON object with the following structure:
+
+```json
+{
+  "fullname": {
+    "firstname": "Jane",
+    "lastname": "Smith"
+  },
+  "email": "jane.smith@example.com",
+  "password": "yourPassword123",
+  "vehicle": {
+    "color": "Red",
+    "plate": "ABC123",
+    "capacity": 4,
+    "vehicleType": "car"
+  }
+}
+```
+
+#### **Field Requirements**
+
+- `fullname.firstname` (string, required): Minimum 3 characters
+- `fullname.lastname` (string, optional): Minimum 3 characters if provided
+- `email` (string, required): Must be a valid email address
+- `password` (string, required): Minimum 6 characters
+- `vehicle.color` (string, required): Minimum 3 characters
+- `vehicle.plate` (string, required): Minimum 3 characters
+- `vehicle.capacity` (integer, required): Minimum 1
+- `vehicle.vehicleType` (string, required): One of `car`, `motorcycle`, `auto`
+
+### **Responses**
+
+#### **Success**
+
+- **Status Code:** `201 Created`
+- **Body:**
+  ```json
+  {
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+    "captain": {
+      "_id": "60f7c2b8e1d3c2a5b8e1d3c2",
+      "fullname": {
+        "firstname": "Jane",
+        "lastname": "Smith"
+      },
+      "email": "jane.smith@example.com",
+      "vehicle": {
+        "color": "Red",
+        "plate": "ABC123",
+        "capacity": 4,
+        "vehicleType": "car"
+      }
+      // other captain fields
+    }
+  }
+  ```
+
+#### **Validation Error**
+
+- **Status Code:** `400 Bad Request`
+- **Body:**
+  ```json
+  {
+    "errors": [
+      {
+        "msg": "Error message",
+        "param": "field",
+        "location": "body"
+      }
+    ]
+  }
+  ```
+
+#### **Other Errors**
+
+- **Status Code:** `500 Internal Server Error`
+- **Body:** Error details
+
+---
+
+## `/captains/login` Endpoint
+
+### **Description**
+
+Authenticates an existing captain. Checks credentials and returns an authentication token with captain data.
+
+### **Method**
+
+`POST`
+
+### **URL**
+
+`/captains/login`
+
+### **Request Body**
+
+```json
+{
+  "email": "jane.smith@example.com",
+  "password": "yourPassword123"
+}
+```
+
+#### **Field Requirements**
+
+- `email` (string, required): Must be a valid email address
+- `password` (string, required): Captain's password
+
+### **Responses**
+
+#### **Success**
+
+- **Status Code:** `200 OK`
+- **Body:**
+  ```json
+  {
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+    "captain": {
+      "_id": "60f7c2b8e1d3c2a5b8e1d3c2",
+      "fullname": {
+        "firstname": "Jane",
+        "lastname": "Smith"
+      },
+      "email": "jane.smith@example.com",
+      "vehicle": {
+        "color": "Red",
+        "plate": "ABC123",
+        "capacity": 4,
+        "vehicleType": "car"
+      }
+      // other captain fields
+    }
+  }
+  ```
+
+#### **Validation Error**
+
+- **Status Code:** `400 Bad Request`
+- **Body:**
+  ```json
+  {
+    "errors": [
+      {
+        "msg": "Error message",
+        "param": "field",
+        "location": "body"
+      }
+    ]
+  }
+  ```
+
+#### **Authentication Error**
+
+- **Status Code:** `401 Unauthorized`
+- **Body:**
+  ```json
+  {
+    "message": "Invalid email or password"
+  }
+  ```
+
+#### **Other Errors**
+
+- **Status Code:** `500 Internal Server Error`
+- **Body:** Error details
+
+---
+
+## `/captains/profile` Endpoint
+
+### **Description**
+
+Returns the authenticated captain's profile information. Requires a valid authentication token.
+
+### **Method**
+
+`GET`
+
+### **URL**
+
+`/captains/profile`
+
+### **Headers**
+
+- `Authorization: Bearer <token>`
+
+### **Responses**
+
+#### **Success**
+
+- **Status Code:** `200 OK`
+- **Body:**
+  ```json
+  {
+    "captain": {
+      "_id": "60f7c2b8e1d3c2a5b8e1d3c2",
+      "fullname": {
+        "firstname": "Jane",
+        "lastname": "Smith"
+      },
+      "email": "jane.smith@example.com",
+      "vehicle": {
+        "color": "Red",
+        "plate": "ABC123",
+        "capacity": 4,
+        "vehicleType": "car"
+      }
+      // other captain fields
+    }
+  }
+  ```
+
+#### **Authentication Error**
+
+- **Status Code:** `401 Unauthorized`
+- **Body:**
+  ```json
+  {
+    "message": "Unauthorized"
+  }
+  ```
+
+---
+
+## `/captains/logout` Endpoint
+
+### **Description**
+
+Logs out the authenticated captain by blacklisting their token and clearing the authentication cookie.
+
+### **Method**
+
+`GET`
+
+### **URL**
+
+`/captains/logout`
+
+### **Headers**
+
+- `Authorization: Bearer <token>`
+
+### **Responses**
+
+#### **Success**
+
+- **Status Code:** `200 OK`
+- **Body:**
+  ```json
+  {
+    "message": "Logout successfully"
+  }
+  ```
+
+#### **Authentication Error**
+
+- **Status Code:** `401 Unauthorized`
+- **Body:**
+  ```json
+  {
+    "message": "Unauthorized"
+  }
+  ```
+
+---
+
+### **Notes**
+
+- All captain endpoints require a valid token for authentication except registration and login.
+- Vehicle details are required for registration.
+- The token will be blacklisted on logout and cannot

@@ -25,5 +25,4 @@ app.use('/users', userRoutes);
 app.use('/captains',captainRoutes);
 
 
-//https://youtu.be/4qyBjxPlEZo?t=4776
 module.exports = app;
